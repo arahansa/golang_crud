@@ -1,0 +1,41 @@
+{{set . "title" "Home"}}
+{{template "board/header.html" .}}
+
+<form action='{{url "Board.Update" .article.Id}}' method="post">
+	<table id="table_board" class="writeForm">
+		<colgroup>
+			<col width="150">
+			<col width="80%">
+		</colgroup>
+		<thead>
+			<tr>
+				<th colspan="2">글 수정하기</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>제목</td>
+				<td><input type="text" name="Title" size="20" value="{{.article.Title}}" />"></td>
+			</tr>
+			<tr>
+				<td>작성자</td>
+				<td>{{.article.Nick}}</td>
+			</tr>
+			<tr>
+				<td>내용</td>
+				<td><textarea name="Body"  rows="5" cols="40">{{.article.Body}}</textarea></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2">
+					<p style="text-align: center;">
+						<input type="submit" value="전송" />
+						<input type="button" value="돌아가기" onclick="history.go(-1)" />
+					</p>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</form>
+{{template "board/footer.html" .}}

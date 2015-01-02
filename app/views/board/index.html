@@ -1,0 +1,55 @@
+{{set . "title" "Home"}}
+{{template "board/header.html" .}}
+
+	<table id="table_board" class="list">
+		<colgroup>
+			<col width="150">
+			<col width="60%">
+			<col width="250">
+			<col width="100">
+			<col width="150">
+		</colgroup>
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>닉네임</th>
+				<th>날짜</th>
+				<th>조회수</th>
+			</tr>
+		</thead>
+		<tbody>
+				{{if not .articles}}
+				<tr>
+					<td colspan="5">
+						<p>	
+  						게시글이 없습니다.
+						</p>
+					</td>			
+				</tr>
+				{{else}}
+				{{range .articles}}
+				<tr>
+					<td>{{.Id}}</td>
+					<td>
+						<a href="{{url "Board.Article" .Id }}">{{.Title}}</a>
+					</td>
+						<td>{{.Nick}}</td>
+						<td>{{.DayWrite.Format "2006-01-02"}}</td>
+						<td>조회수</td>
+				</tr>
+				{{end}}
+				{{end}}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="5">
+					<a href="#">이전</a>
+						<a href="#">1</a>
+						<a href="#">다음</a>
+						<a href="{{url "Board.FormWrite" }}">글쓰기</a>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+{{template "board/footer.html" .}}

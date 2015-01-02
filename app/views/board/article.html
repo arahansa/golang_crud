@@ -1,0 +1,43 @@
+{{set . "title" "Home"}}
+{{template "board/header.html" .}}
+<table id="table_board" class="writeForm">
+	<colgroup>
+		<col width="150">
+		<col width="80%">
+	</colgroup>
+	<thead>
+		<tr>
+			<th colspan="2">글 읽기</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>제목</td>
+			<td>{{.article.Title}}</td>
+		</tr>
+		<tr>
+			<td>작성자</td>
+			<td>{{.article.Nick}}</td>
+		</tr>
+		<tr>
+			<td>작성일</td>
+			<td>{{.article.DayWrite.Format "2006-01-02"}}</td>
+		</tr>
+		<tr>
+			<td>내용</td>
+			<td>{{.article.Body}}</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="2">
+				<p style="text-align: center;">
+					<a href='{{url "Board.Index"}}'>[목록]</a>
+					<a href="{{url "Board.FormUpdate" .article.Id}}">[수정]</a>
+					<a href="{{url "Board.Delete" .article.Id}}">[삭제]</a>
+				</p>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+{{template "board/footer.html" .}}
