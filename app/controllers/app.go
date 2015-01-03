@@ -5,9 +5,7 @@ import "github.com/revel/revel"
 type App struct {
 	GorpController
 }
-/*type Application struct {
-	GorpController
-}*/
+
 
 func (c App) Index() revel.Result {
 	return c.Render()
