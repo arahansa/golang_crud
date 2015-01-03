@@ -10,37 +10,10 @@ import (
 type Board struct {
 	App
 }
-const (
-	COUNT_PER_PAGE = 10;
-)
 
 // 기본페이지 . 리스트
-func (c Board) Index() revel.Result {	
-	articles := c.Page(1)
-	log.Println(articles)
-	return c.Render(articles)
-}
-
-func (c Board) Page(requestPage int64) []*models.Board {
-	//페이지 요청후 페이징 계산 알고리즘..복붙복붙;;
-	totalArticleCount, err := c.Txn.SelectInt("select count(*) from board")
-    checkErr(err, "select count(*) failed")
-    log.Println("Rows count:", totalArticleCount)
-
-    beginPage  := (requestPage - 1) / COUNT_PER_PAGE * COUNT_PER_PAGE + 1
-    endPage := beginPage + (COUNT_PER_PAGE-1)
-    totalPageCount := totalArticleCount / COUNT_PER_PAGE;
-	if endPage > totalPageCount{
-		endPage = totalPageCount
-	}
-	firstRow := (requestPage - 1) * COUNT_PER_PAGE 
-	endRow := firstRow + COUNT_PER_PAGE 
-	if endRow > totalArticleCount{
-		endRow = totalArticleCount
-	}
-	//여기서부터는 sql
-	results, err := c.Txn.Select(models.Board{}, 
-		`select * from board order by post_id desc limit ?, ?`, firstRow, endRow-firstRow)
+func (c Board) Index() revel.Result {
+	results, err := c.Txn.Select(models.Board{}, `select * from board order by post_id desc`)
 	if err != nil {
 		panic(err)
 	}
@@ -50,10 +23,9 @@ func (c Board) Page(requestPage int64) []*models.Board {
 		b := r.(*models.Board)
 		articles = append(articles, b)
 	}
-	return articles
-
+	log.Println(articles)
+	return c.Render(articles)
 }
-
 
 //하나의 글 읽기
 func (c Board) Article(Id int) revel.Result {
