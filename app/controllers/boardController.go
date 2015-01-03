@@ -5,6 +5,7 @@ import (
 	"log"
 	"myapp/app/models"
 	"myapp/app/routes"
+	"strconv"
 )
 
 type Board struct {
@@ -15,21 +16,23 @@ const (
 )
 
 // 기본페이지 . 리스트
-func (c Board) Index() revel.Result {	
-	articles := c.Page(1)
-	log.Println(articles)
-	return c.Render(articles)
+func (c Board) Index(RequestPage int64) revel.Result {	
+	if RequestPage==0{RequestPage++}
+	articles , pageInfo := c.Page(RequestPage)
+	log.Println("게시글들과 페이지 정보 ",articles, pageInfo)
+	return c.Render(articles, pageInfo)
 }
 
-func (c Board) Page(requestPage int64) []*models.Board {
+func (c Board) Page(requestPage int64) ([]*models.Board, models.PageInfo){
 	//페이지 요청후 페이징 계산 알고리즘..복붙복붙;;
 	totalArticleCount, err := c.Txn.SelectInt("select count(*) from board")
     checkErr(err, "select count(*) failed")
-    log.Println("Rows count:", totalArticleCount)
-
+    totalPageCount := totalArticleCount / COUNT_PER_PAGE;
+    if (totalPageCount % COUNT_PER_PAGE) != 0{
+    	totalPageCount++;
+    }
     beginPage  := (requestPage - 1) / COUNT_PER_PAGE * COUNT_PER_PAGE + 1
     endPage := beginPage + (COUNT_PER_PAGE-1)
-    totalPageCount := totalArticleCount / COUNT_PER_PAGE;
 	if endPage > totalPageCount{
 		endPage = totalPageCount
 	}
@@ -50,8 +53,13 @@ func (c Board) Page(requestPage int64) []*models.Board {
 		b := r.(*models.Board)
 		articles = append(articles, b)
 	}
-	return articles
-
+	var pageinfo  models.PageInfo
+	pageinfo.BeginPage = beginPage
+	pageinfo.EndPage = endPage
+	pageinfo.TotalPageCount = totalPageCount
+	
+	
+	return articles, pageinfo
 }
 
 
@@ -73,8 +81,25 @@ func (c Board) Post(board models.Board) revel.Result {
 	if err != nil {
 		panic(err)
 	}
-	return c.Redirect(routes.Board.Index())
+	return c.Redirect(routes.Board.Index(1))
 }
+//글 더미 작성
+func (c Board) Dummy() revel.Result{
+	log.Println("더미를 작성합니다.")
+	var board models.Board
+	for i:=0;i<100;i++{
+		board.Title = "test"+strconv.Itoa(i)
+		board.Body ="testtest"
+		board.Nick = "nick"
+		err := c.Txn.Insert(&board)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return c.Redirect(routes.Board.Index(1))
+}
+
 
 
 //글삭제
@@ -83,7 +108,7 @@ func (c Board) Delete(Id int64) revel.Result {
 	if err != nil {
 		panic(err)
 	}
-	return c.Redirect(routes.Board.Index())
+	return c.Redirect(routes.Board.Index(1))
 }
 
 //글 수정폼

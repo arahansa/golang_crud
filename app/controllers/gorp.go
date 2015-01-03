@@ -8,15 +8,8 @@ import (
 	r "github.com/revel/revel"
 	"log"
 	"myapp/app/models"
-	//"time"
+	
 )
-
-func checkErr(err error, msg string) {
-	if err != nil {
-		log.Fatalln(msg, err)
-	}
-}
-
 var (
 	Dbm *gorp.DbMap
 )
@@ -24,6 +17,17 @@ const (
 	DATE_FORMAT     = "Jan _2, 2006"
 	SQL_DATE_FORMAT = "2006-01-02"
 )
+type GorpController struct {
+	*r.Controller
+	Txn *gorp.Transaction
+}
+
+func checkErr(err error, msg string) {
+	if err != nil {
+		log.Fatalln(msg, err)
+	}
+}
+
 
 func InitDB() {
 
@@ -41,10 +45,7 @@ func InitDB() {
 	log.Println("gorp 초기화 잘 되었다~~ 꺼윽~~")
 }
 
-type GorpController struct {
-	*r.Controller
-	Txn *gorp.Transaction
-}
+
 
 func (c *GorpController) Begin() r.Result {
 	txn, err := Dbm.Begin()

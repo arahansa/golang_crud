@@ -8,7 +8,6 @@ import (
 )
 
 type Board struct {
-	// db tag lets you specify the column name if it differs from the struct field
 	Id      int64 `db:"post_id"`
 	Title   string
 	Body    string
@@ -41,5 +40,9 @@ func (b *Board) PostGet(_ gorp.SqlExecutor) error {
 		return fmt.Errorf("Error parsing check in date '%s':", b.DayWriteStr, err)
 	}
 	return nil
+}
+
+func (b Board) String() string {
+	return fmt.Sprintf("Board(%d, %s, %s, %s, %s)", b.Id, b.Title, b.Body, b.Nick, b.DayWriteStr)
 }
 

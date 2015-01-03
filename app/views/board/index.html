@@ -28,7 +28,7 @@
 					</td>			
 				</tr>
 				{{else}}
-				{{range .articles}}
+				{{range (.articles)}}
 				<tr>
 					<td>{{.Id}}</td>
 					<td>
@@ -44,10 +44,16 @@
 		<tfoot>
 			<tr>
 				<td colspan="5">
-					<a href="#">이전</a>
-						<a href="#">1</a>
-						<a href="#">다음</a>
-						<a href="{{url "Board.FormWrite" }}">글쓰기</a>
+					{{ if gt .pageInfo.BeginPage 10 }}
+						<a class="prev" href="{{url "Board.Index" .pageInfo.PrevBeginPage}}">이전</a>
+					{{end}}
+					{{range .pageInfo.Pagenation}}
+						<a href="{{url "Board.Index" .}}">{{.}}</a>
+					{{end}}
+					{{if lt .pageInfo.EndPage .pageInfo.TotalPageCount}}
+						<a href="{{url "Board.Index" .pageInfo.NextEndPage}}">다음</a>
+					{{end}}
+					<a href="{{url "Board.FormWrite" }}">글쓰기</a>
 				</td>
 			</tr>
 		</tfoot>

@@ -2,9 +2,15 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-module:testrunner
+#module:testrunner
 
 GET  /      App.Index
+
+GET /board/dummy Board.Dummy
+
+GET /board/:RequestPage/page Board.Index
+
+
 #게시판 처음
 GET  /board Board.Index
 
